@@ -1,4 +1,4 @@
-﻿// testing
+﻿// Improved output formatting
 
 using System;
 using System.Collections.Generic;
