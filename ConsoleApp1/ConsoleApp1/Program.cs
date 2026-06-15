@@ -1,4 +1,4 @@
-﻿// Improved output formatting
+﻿// Added final adjustments
 
 using System;
 using System.Collections.Generic;
