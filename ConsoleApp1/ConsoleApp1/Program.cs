@@ -1,43 +1,67 @@
-﻿// test
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+
+class Student
+{
+    private string name;
+    private List<double> grades;
+
+    public Student(string name, double g1, double g2, double g3)
+    {
+        this.name = name;
+
+        grades = new List<double>();
+        grades.Add(g1);
+        grades.Add(g2);
+        grades.Add(g3);
+    }
+
+    public string GetName()
+    {
+        return name;
+    }
+
+    public List<double> GetGrades()
+    {
+        return grades;
+    }
+
+    public double GetAverage()
+    {
+        double sum = 0;
+
+        foreach (double grade in grades)
+        {
+            sum += grade;
+        }
+
+        return sum / grades.Count;
+    }
+}
 
 class StudentManager
 {
-    private List<string> names = new List<string>();
-    private List<double> g1List = new List<double>();
-    private List<double> g2List = new List<double>();
-    private List<double> g3List = new List<double>();
-    private List<double> avgGrades = new List<double>();
+    private List<Student> students = new List<Student>();
 
- 
     public void AddStudent(string name, double g1, double g2, double g3)
     {
-        double average = ComputeAverage(g1, g2, g3);
-
-        names.Add(name);
-        g1List.Add(g1);
-        g2List.Add(g2);
-        g3List.Add(g3);
-        avgGrades.Add(average);
-    }
-
-    public double ComputeAverage(double g1, double g2, double g3)
-    {
-        return (g1 + g2 + g3) / 3;
+        Student s = new Student(name, g1, g2, g3);
+        students.Add(s);
     }
 
     public List<string> GetAllStudents()
     {
         List<string> result = new List<string>();
 
-        for (int i = 0; i < names.Count; i++)
+        foreach (Student s in students)
         {
+            List<double> g = s.GetGrades();
+
             string data =
-                "Name: " + names[i] + "\n" +
-                "Grades: " + g1List[i] + ", " + g2List[i] + ", " + g3List[i] + "\n" +
-                "Average: " + avgGrades[i].ToString("F2");
+                "Name: " + s.GetName() + "\n" +
+                "Grades: " + g[0] + ", " + g[1] + ", " + g[2] + "\n" +
+                "Average: " + s.GetAverage().ToString("F2");
 
             result.Add(data);
         }
@@ -45,42 +69,38 @@ class StudentManager
         return result;
     }
 
-   
     public double GetClassAverage()
     {
-        if (avgGrades.Count == 0)
+        if (students.Count == 0)
             return 0;
 
         double sum = 0;
 
-        foreach (double avg in avgGrades)
+        foreach (Student s in students)
         {
-            sum += avg;
+            sum += s.GetAverage();
         }
 
-        return sum / avgGrades.Count;
+        return sum / students.Count;
     }
 
-    
     public string GetTopStudent()
     {
-        if (avgGrades.Count == 0)
+        if (students.Count == 0)
             return "No students available.";
 
-        double highest = avgGrades[0];
-        int index = 0;
+        Student top = students[0];
 
-        for (int i = 1; i < avgGrades.Count; i++)
+        foreach (Student s in students)
         {
-            if (avgGrades[i] > highest)
+            if (s.GetAverage() > top.GetAverage())
             {
-                highest = avgGrades[i];
-                index = i;
+                top = s;
             }
         }
 
-        return "Top Student: " + names[index] +
-               "\nHighest Grade: " + highest.ToString("F2");
+        return "Top Student: " + top.GetName() +
+               "\nHighest Grade: " + top.GetAverage().ToString("F2");
     }
 }
 
