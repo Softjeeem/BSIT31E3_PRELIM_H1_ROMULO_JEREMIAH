@@ -1,17 +1,94 @@
-﻿// Added final adjustments
+﻿// test
 
 using System;
 using System.Collections.Generic;
+
+class StudentManager
+{
+    private List<string> names = new List<string>();
+    private List<double> g1List = new List<double>();
+    private List<double> g2List = new List<double>();
+    private List<double> g3List = new List<double>();
+    private List<double> avgGrades = new List<double>();
+
+ 
+    public void AddStudent(string name, double g1, double g2, double g3)
+    {
+        double average = ComputeAverage(g1, g2, g3);
+
+        names.Add(name);
+        g1List.Add(g1);
+        g2List.Add(g2);
+        g3List.Add(g3);
+        avgGrades.Add(average);
+    }
+
+    public double ComputeAverage(double g1, double g2, double g3)
+    {
+        return (g1 + g2 + g3) / 3;
+    }
+
+    public List<string> GetAllStudents()
+    {
+        List<string> result = new List<string>();
+
+        for (int i = 0; i < names.Count; i++)
+        {
+            string data =
+                "Name: " + names[i] + "\n" +
+                "Grades: " + g1List[i] + ", " + g2List[i] + ", " + g3List[i] + "\n" +
+                "Average: " + avgGrades[i].ToString("F2");
+
+            result.Add(data);
+        }
+
+        return result;
+    }
+
+   
+    public double GetClassAverage()
+    {
+        if (avgGrades.Count == 0)
+            return 0;
+
+        double sum = 0;
+
+        foreach (double avg in avgGrades)
+        {
+            sum += avg;
+        }
+
+        return sum / avgGrades.Count;
+    }
+
+    
+    public string GetTopStudent()
+    {
+        if (avgGrades.Count == 0)
+            return "No students available.";
+
+        double highest = avgGrades[0];
+        int index = 0;
+
+        for (int i = 1; i < avgGrades.Count; i++)
+        {
+            if (avgGrades[i] > highest)
+            {
+                highest = avgGrades[i];
+                index = i;
+            }
+        }
+
+        return "Top Student: " + names[index] +
+               "\nHighest Grade: " + highest.ToString("F2");
+    }
+}
 
 class Program
 {
     static void Main()
     {
-        List<string> names = new List<string>();
-        List<double> g1List = new List<double>();
-        List<double> g2List = new List<double>();
-        List<double> g3List = new List<double>();
-        List<double> avgGrades = new List<double>();
+        StudentManager manager = new StudentManager();
 
         while (true)
         {
@@ -27,7 +104,6 @@ class Program
             int choice = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine();
 
-            // ADD STUDENT
             if (choice == 1)
             {
                 Console.Write("Enter student name: ");
@@ -42,88 +118,42 @@ class Program
                 Console.Write("Enter grade 3: ");
                 double g3 = Convert.ToDouble(Console.ReadLine());
 
-                double average = (g1 + g2 + g3) / 3;
+                manager.AddStudent(name, g1, g2, g3);
 
-                names.Add(name);
-                g1List.Add(g1);
-                g2List.Add(g2);
-                g3List.Add(g3);
-                avgGrades.Add(average);
-
-                Console.WriteLine("Student added successfully!");
-                Console.WriteLine();
+                Console.WriteLine("Student added successfully!\n");
             }
-
-            // VIEW ALL STUDENTS
             else if (choice == 2)
             {
-                for (int i = 0; i < names.Count; i++)
+                List<string> students = manager.GetAllStudents();
+
+                foreach (string s in students)
                 {
-                    Console.WriteLine("Name: " + names[i]);
-                    Console.WriteLine("Grades: " + g1List[i] + ", " + g2List[i] + ", " + g3List[i]);
-                    Console.WriteLine("Average: " + avgGrades[i].ToString("F2"));
+                    Console.WriteLine(s);
                     Console.WriteLine();
                 }
             }
-
-            // CLASS AVERAGE
             else if (choice == 3)
             {
-                double sum = 0;
-
-                foreach (double avg in avgGrades)
-                {
-                    sum += avg;
-                }
-
-                double classAverage = names.Count > 0 ? sum / names.Count : 0;
+                double avg = manager.GetClassAverage();
 
                 Console.WriteLine("===== CLASS AVERAGE =====");
-                Console.WriteLine("Overall Average Grade: " + classAverage.ToString("F2"));
-                Console.WriteLine();
+                Console.WriteLine("Overall Average Grade: " + avg.ToString("F2") + "\n");
             }
-
-            // HIGHEST GRADE
             else if (choice == 4)
             {
-                if (names.Count == 0)
-                {
-                    Console.WriteLine("No students available.");
-                    Console.WriteLine();
-                    continue;
-                }
-
-                double highest = avgGrades[0];
-                int index = 0;
-
-                for (int i = 1; i < avgGrades.Count; i++)
-                {
-                    if (avgGrades[i] > highest)
-                    {
-                        highest = avgGrades[i];
-                        index = i;
-                    }
-                }
-
                 Console.WriteLine("===== HIGHEST GRADE =====");
-                Console.WriteLine("Top Student: " + names[index]);
-                Console.WriteLine("Highest Grade: " + highest.ToString("F2"));
+                Console.WriteLine(manager.GetTopStudent());
                 Console.WriteLine();
             }
-
-            // EXIT
             else if (choice == 5)
             {
                 Console.WriteLine("Exiting program...");
                 Console.WriteLine("Goodbye!");
                 break;
             }
-
-            // INVALID OPTION
             else
             {
-                Console.WriteLine("Invalid option!");
-                Console.WriteLine();
+                Console.WriteLine("Invalid option!\n");
             }
         }
     }
